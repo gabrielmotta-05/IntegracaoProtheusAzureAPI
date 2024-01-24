@@ -68,29 +68,26 @@ public class IntegracaoController : ControllerBase
             }
         }
         [Route("api/[controller]")]
-        [ApiController]
-        [HttpPost]
+        [HttpPost("receber-dados-protheus")]
         public async Task<IActionResult> ReceberDadosProtheus([FromBody] JObject dadosProtheus)
         {
             try
             {
-                // Aqui você pode acessar os campos OP, PRODUTO, QUANTIDADE de dadosProtheus
-                // e chamar o método "IntegracaoProtheusAzure" com esses dados.
-
+                // Obter os campos OP, PRODUTO, QUANTIDADE de dadosProtheus
                 string op = dadosProtheus["OP"].ToString();
                 string produto = dadosProtheus["PRODUTO"].ToString();
                 string quantidade = dadosProtheus["QUANTIDADE"].ToString();
 
-                // Chamar o método diretamente, sem criar uma nova instância de IntegracaoController
                 await IntegracaoProtheusAzure(op, produto, quantidade);
 
-                //return Ok("Dados recebidos com sucesso!");
+                return new OkObjectResult("Dados recebidos com sucesso!");
             }
             catch (Exception ex)
             {
-                //return BadRequest($"Erro ao processar os dados: {ex.Message}");
+                return new BadRequestObjectResult($"Erro ao processar os dados: {ex.Message}");
             }
         }
+
 
         public async Task IntegracaoProtheusAzure(string op, string produto, string quantidade)
         {
@@ -161,7 +158,7 @@ public class IntegracaoController : ControllerBase
                     for (int i = 0; i < Convert.ToInt32(quantidade); i++)
                     {
                         //DESENVOLVER METODO ABAIXO PARA CRIAR NUMERO DE SERIE A PARTIR DO ULTIMO CRIADO
-                        //productsAdded.Add(await azureAPIService.GetNewSN(OP));
+                        productsAdded.Add(await azureAPIService.GetNewSN(OP));
                     }
 
                     foreach (AzureProduct product in productsAdded)
@@ -290,7 +287,7 @@ public class IntegracaoController : ControllerBase
                         try
                         {
                             AzureAPIService azureAPIService = new AzureAPIService("AzureProduct");
-                            //productsAdded.Add(await azureAPIService.GetNewSN(OP));
+                            productsAdded.Add(await azureAPIService.GetNewSN(OP));
                         }
                         catch (System.Net.Http.HttpRequestException)
                         {
@@ -421,35 +418,33 @@ public class IntegracaoController : ControllerBase
             //    if (print == DialogResult.Yes)
             //    {
             //        List<AzureProduct> productsToPrint = new List<AzureProduct>();
-            //        foreach (AzureProduct product in productsAdded)
-            //        {
-            //            productsToPrint.Add(await azureAPIServiceforNS.GetProductInfo(product.id));
-            //        }
+            //foreach (AzureProduct product in productsAdded)
+            //{
+            //    productsToPrint.Add(await azureAPIServiceforNS.GetProductInfo(product.id));
+            //}
 
-            //        foreach (AzureProduct product in productsToPrint)
-            //        {
-            //            Print(product.id, product.model, product.productCode, product.MAC1_uint64.ToString("X12"), product.MAC2_uint64.ToString("X12"), product.hardwareVersion);
-            //        }
-            //        //if (!Global.AZURECOSMOS_DB && Global.PROTHEUS_DB)
-            //        //{
-            //        //    foreach (Product product in products)
-            //        //    {
-            //        //        if (!webService.GetProductData(product.Serial))
-            //        //        {
-            //        //            string model = webService.webServiceData.model;
-            //        //            string code = webService.webServiceData.code;
-            //        //            string mac = webService.webServiceData.macAddr;
-            //        //            string abcc = webService.webServiceData.abcc;
-            //        //            string verhw = webService.webServiceData.hardRev;
+            //foreach (AzureProduct product in productsToPrint)
+            //{
+            //    Print(product.id, product.model, product.productCode, product.MAC1_uint64.ToString("X12"), product.MAC2_uint64.ToString("X12"), product.hardwareVersion);
+            //}
 
-            //        //            Print(product.Serial, model, code, mac, abcc, verhw);
-            //        //        }
-            //        //        else
-            //        //        {
-            //        //            MessageBox.Show("Falha ao se conectar com o servidor");
-            //        //        }
-            //        //    }
-            //        //}
+            //foreach (Product product in products)
+            //{
+            //    if (!webService.GetProductData(product.Serial))
+            //    {
+            //        string model = webService.webServiceData.model;
+            //        string code = webService.webServiceData.code;
+            //        string mac = webService.webServiceData.macAddr;
+            //        string abcc = webService.webServiceData.abcc;
+            //        string verhw = webService.webServiceData.hardRev;
+
+            //        Print(product.Serial, model, code, mac, abcc, verhw);
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show("Falha ao se conectar com o servidor");
+            //    }
+            //}
 
             //    }
             //    status.Text = "OK";
