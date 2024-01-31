@@ -67,9 +67,9 @@ public class IntegracaoController : ControllerBase
                 Id = id;
             }
         }
-        [Route("api/[controller]")]
-        [HttpPost("receber-dados-protheus")]
-        public async Task<IActionResult> ReceberDadosProtheus([FromBody] JObject dadosProtheus)
+        [Route("api/IntegracaoController")]
+        [HttpPost("getInfoProtheus")]
+        public IActionResult getInfoProtheus([FromBody] JObject dadosProtheus)
         {
             try
             {
@@ -78,7 +78,7 @@ public class IntegracaoController : ControllerBase
                 string produto = dadosProtheus["PRODUTO"].ToString();
                 string quantidade = dadosProtheus["QUANTIDADE"].ToString();
 
-                await IntegracaoProtheusAzure(op, produto, quantidade);
+                var resultado = IntegracaoProtheusAzure(op, produto, quantidade);
 
                 return new OkObjectResult("Dados recebidos com sucesso!");
             }
@@ -87,6 +87,29 @@ public class IntegracaoController : ControllerBase
                 return new BadRequestObjectResult($"Erro ao processar os dados: {ex.Message}");
             }
         }
+
+
+        //[Route("ReceberDadosProtheus/{dadosProtheus}")]
+        //[HttpGet]
+        //public IActionResult ReceberDadosProtheus([FromBody] JObject dadosProtheus)
+        //{
+        //    try
+        //    {
+        //        // Obter os campos OP, PRODUTO, QUANTIDADE de dadosProtheus
+        //        string op = dadosProtheus["OP"].ToString();
+        //        string produto = dadosProtheus["PRODUTO"].ToString();
+        //        string quantidade = dadosProtheus["QUANTIDADE"].ToString();
+
+        //        var InserirAzure = IntegracaoProtheusAzure(op, produto, quantidade);
+
+        //        return new OkObjectResult("Dados recebidos com sucesso!");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new BadRequestObjectResult($"Erro ao processar os dados: {ex.Message}");
+        //    }
+        //}
+
 
 
         public async Task IntegracaoProtheusAzure(string op, string produto, string quantidade)
